@@ -22,7 +22,10 @@ type RunnResp struct {
 		Id     string `json:"id"`
 		Path   string `json:"path"`
 		Result string `json:"result"`
-		Steps  []any  `json:"steps"`
+		Steps  []struct {
+			Key    string `json:"key"`
+			Result string `json:"result"`
+		} `json:"steps"`
 	} `json:"results"`
 }
 
