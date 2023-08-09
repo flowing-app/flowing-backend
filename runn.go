@@ -29,6 +29,9 @@ type RunnResp struct {
 	} `json:"results"`
 }
 
+const bookDir = "book/"
+const resultDir = "result/"
+
 func handleRunn(c echo.Context) error {
 	body, err := io.ReadAll(c.Request().Body)
 	if err != nil {
@@ -72,6 +75,10 @@ func handleRunn(c echo.Context) error {
 func saveBook(book string) (string, error) {
 	id := uuid.New().String()
 
+	if err := os.MkdirAll(bookDir, 0755); err != nil {
+		return "", err
+	}
+
 	f, err := os.Create(bookPath(id))
 	if err != nil {
 		return "", err
@@ -86,6 +93,10 @@ func saveBook(book string) (string, error) {
 }
 
 func saveResult(id string, outJson func(out io.Writer) error) error {
+	if err := os.MkdirAll(resultDir, 0755); err != nil {
+		return err
+	}
+
 	f, err := os.Create(resultPath(id))
 	if err != nil {
 		return err
@@ -99,13 +110,9 @@ func saveResult(id string, outJson func(out io.Writer) error) error {
 	return nil
 }
 
-const bookDir = "book/"
-
 func bookPath(id string) string {
 	return bookDir + "book-" + id + ".yaml"
 }
-
-const resultDir = "result/"
 
 func resultPath(id string) string {
 	return resultDir + "result-" + id + ".json"
